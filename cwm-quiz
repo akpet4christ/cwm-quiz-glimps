@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CMW Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#171a2b;
+    --paper:#f6f2e9;
+    --rule:#cfc6b2;
+    --accent:#7d1f2e;
+    --muted:#5d5a52;
+    --good:#1f9d55;
+    --bad:#d12b2b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#efe9dc;
+      --paper:#15161c;
+      --rule:#3a3b45;
+      --accent:#d8a24a;
+      --muted:#9c968a;
+      --good:#2fbf70;
+      --bad:#ef4444;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#efe9dc; --paper:#15161c; --rule:#3a3b45; --accent:#d8a24a;
+    --muted:#9c968a; --good:#2fbf70; --bad:#ef4444;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height:1.5;
+    display:flex;
+    justify-content:center;
+    padding:clamp(1.25rem,4vw,3.5rem) 1.25rem 4rem;
+  }
+  main{width:100%;max-width:38rem}
+
+  .meta{
+    font-size:.8rem;
+    color:var(--muted);
+    border-bottom:1px solid var(--rule);
+    padding-bottom:.6rem;
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+  }
+
+  h1{
+    font-family:"Spectral", Georgia, "Times New Roman", serif;
+    font-weight:600;
+    font-size:clamp(1.45rem,4.2vw,1.9rem);
+    line-height:1.3;
+    margin:1.6rem 0 0;
+    letter-spacing:-.01em;
+  }
+  .stem{
+    font-family:"Spectral", Georgia, serif;
+    font-size:1.02rem;
+    color:var(--muted);
+    margin:.9rem 0 2rem;
+    max-width:34rem;
+  }
+  .stem em{color:var(--accent);font-style:italic}
+
+  ul{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+
+  .choice{
+    width:100%;
+    display:flex;
+    align-items:baseline;
+    gap:.9rem;
+    text-align:left;
+    font:inherit;
+    color:inherit;
+    background:transparent;
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding:.9rem 1rem;
+    cursor:pointer;
+    transition:border-color .15s ease, background-color .15s ease;
+  }
+  .choice:hover:not(:disabled){border-color:var(--ink)}
+  .choice:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .choice:disabled{cursor:default}
+
+  .letter{
+    font-family:"Spectral", Georgia, serif;
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--accent);
+    min-width:1.1rem;
+  }
+  .label{font-size:1.02rem}
+
+  .choice.correct{animation:flash-green .45s steps(1,end) 6 forwards}
+  .choice.wrong{animation:flash-red .45s steps(1,end) 6 forwards}
+
+  @keyframes flash-green{
+    0%,49%{background:var(--good);border-color:var(--good);color:#fff}
+    50%,100%{background:transparent;border-color:var(--good);color:var(--ink)}
+  }
+  @keyframes flash-red{
+    0%,49%{background:var(--bad);border-color:var(--bad);color:#fff}
+    50%,100%{background:transparent;border-color:var(--bad);color:var(--ink)}
+  }
+  .choice.correct .letter,.choice.wrong .letter{color:inherit}
+
+  @media (prefers-reduced-motion: reduce){
+    .choice.correct{animation:none;background:var(--good);border-color:var(--good);color:#fff}
+    .choice.wrong{animation:none;background:var(--bad);border-color:var(--bad);color:#fff}
+  }
+
+  .verdict{
+    margin-top:1.6rem;
+    min-height:1.5rem;
+    font-family:"Spectral", Georgia, serif;
+    font-size:1.05rem;
+  }
+  .verdict.is-correct{color:var(--good)}
+  .verdict.is-wrong{color:var(--bad)}
+  .verdict span{display:block;font-family:"IBM Plex Sans",sans-serif;font-size:.9rem;color:var(--muted);margin-top:.35rem}
+
+  .again{
+    margin-top:1.4rem;
+    font:inherit;
+    font-size:.9rem;
+    color:var(--ink);
+    background:transparent;
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding:.5rem .9rem;
+    cursor:pointer;
+    visibility:hidden;
+  }
+  .again.show{visibility:visible}
+  .again:hover{border-color:var(--ink)}
+  .again:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <p class="meta"><span>CMW QUIZ</span><span>Question 1 of 1</span></p>
+
+  <h1>An interpretation, especially of Scripture, that reflects the personal idea or viewpoint of the interpreter.</h1>
+  <p class="stem">Reading something <em>into</em> a text that is not there &mdash; the same error Peter Olasupo made last Saturday, Sept&nbsp;12,&nbsp;2026. Which option best describes this definition?</p>
+
+  <ul id="choices">
+    <li><button class="choice" data-key="A"><span class="letter">A</span><span class="label">Exegesis</span></button></li>
+    <li><button class="choice" data-key="B"><span class="letter">B</span><span class="label">Eisegesis</span></button></li>
+    <li><button class="choice" data-key="C"><span class="letter">C</span><span class="label">Exaggeration</span></button></li>
+    <li><button class="choice" data-key="D"><span class="letter">D</span><span class="label">Exclamation</span></button></li>
+  </ul>
+
+  <p class="verdict" id="verdict" role="status" aria-live="polite"></p>
+  <button class="again" id="again">Try again</button>
+</main>
+
+<script>
+  const ANSWER = "B";
+  const buttons = Array.from(document.querySelectorAll(".choice"));
+  const verdict = document.getElementById("verdict");
+  const again = document.getElementById("again");
+
+  buttons.forEach(btn => btn.addEventListener("click", () => {
+    const picked = btn.dataset.key;
+    const right = picked === ANSWER;
+
+    buttons.forEach(b => b.disabled = true);
+    btn.classList.add(right ? "correct" : "wrong");
+
+    verdict.className = "verdict " + (right ? "is-correct" : "is-wrong");
+    verdict.innerHTML = right
+      ? 'Correct. Eisegesis is B.<span>Eis- means "into": the reader carries meaning into the text.</span>'
+      : 'Not this one.<span>Exegesis draws meaning out of the text. The word for putting meaning in starts differently.</span>';
+
+    again.classList.add("show");
+  }));
+
+  again.addEventListener("click", () => {
+    buttons.forEach(b => {
+      b.disabled = false;
+      b.classList.remove("correct", "wrong");
+    });
+    verdict.className = "verdict";
+    verdict.textContent = "";
+    again.classList.remove("show");
+    buttons[0].focus();
+  });
+</script>
+</body>
+</html>
